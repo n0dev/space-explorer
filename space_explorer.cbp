@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="space_explorer" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/space_explorer_dbg" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/space_explorer" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="bin" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add directory="/usr/include/freetype2/" />
+		</Compiler>
+		<Linker>
+			<Add library="GL" />
+			<Add library="GLU" />
+			<Add library="GLEW" />
+			<Add library="openal" />
+			<Add library="png" />
+			<Add library="tiff" />
+			<Add library="SDL" />
+			<Add library="sndfile" />
+			<Add library="ftgl" />
+		</Linker>
+		<Unit filename="sources/data/importdb.cpp" />
+		<Unit filename="sources/data/importdb.h" />
+		<Unit filename="sources/data/objects.cpp" />
+		<Unit filename="sources/data/objects.h" />
+		<Unit filename="sources/data/planet.cpp" />
+		<Unit filename="sources/data/planet.h" />
+		<Unit filename="sources/data/spectrum.cpp" />
+		<Unit filename="sources/data/spectrum.h" />
+		<Unit filename="sources/farbeyond.cpp" />
+		<Unit filename="sources/gameplay/events.cpp" />
+		<Unit filename="sources/gameplay/events.h" />
+		<Unit filename="sources/gameplay/joystick.cpp" />
+		<Unit filename="sources/gameplay/keyboard.cpp" />
+		<Unit filename="sources/gameplay/mouse.cpp" />
+		<Unit filename="sources/gameplay/observer.cpp" />
+		<Unit filename="sources/gameplay/observer.h" />
+		<Unit filename="sources/glsl.cpp" />
+		<Unit filename="sources/gui/display.cpp" />
+		<Unit filename="sources/gui/window.cpp" />
+		<Unit filename="sources/include/gameplay.h" />
+		<Unit filename="sources/include/glsl.h" />
+		<Unit filename="sources/include/gui.h" />
+		<Unit filename="sources/include/lights.h" />
+		<Unit filename="sources/include/main.h" />
+		<Unit filename="sources/include/music.h" />
+		<Unit filename="sources/include/quaternions.h" />
+		<Unit filename="sources/include/utils.h" />
+		<Unit filename="sources/lights.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/sounds/music.cpp" />
+		<Unit filename="sources/textures/loadpng.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/textures/loadpng.h" />
+		<Unit filename="sources/textures/loadtiff.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="sources/textures/loadtiff.h" />
+		<Unit filename="sources/utils/quaternions.cpp" />
+		<Unit filename="sources/utils/utils.cpp" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
