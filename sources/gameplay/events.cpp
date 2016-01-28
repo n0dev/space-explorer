@@ -178,6 +178,10 @@ void handleKeyPress(SDL_keysym *keysym) {
 		}
 		printf("Current Video Info: %d x %d pixels\n", videoInfo->current_w,videoInfo->current_h);*/
 		break;
+
+    case SDLK_KP1:
+        std::cout << "DONE" << std::endl;
+        break;
 	default:
 		break;
 	}
@@ -185,7 +189,7 @@ void handleKeyPress(SDL_keysym *keysym) {
 
 void computeSpaceshipSpeed() {
 	if (globalInput.speed < 0) {
-		spaceship->speed = (double) pow(abs(globalInput.speed), 1.7)	* pow(10, spaceship->rangespeed-6);
+		spaceship->speed = (double) pow(abs(globalInput.speed), 1.7) * pow(10, spaceship->rangespeed-6);
 	} else {
 		spaceship->speed = -(double) pow(abs(globalInput.speed), 1.7) * pow(10, spaceship->rangespeed-6);
 	}

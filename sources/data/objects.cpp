@@ -33,11 +33,6 @@ float colors[N_VERTS*C_SIZE] =
 		0.0, 0.0, 1.0
 };
 
-double rand_a_b(int a, int b)
-{
-	return rand()/((double)RAND_MAX + 1)*(b-a) + a;
-}
-
 void init_sky()
 {
 	int i;

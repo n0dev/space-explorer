@@ -1,10 +1,3 @@
-/*
- * utils.c
- *
- *  Created on: 19 mai 2013
- *      Author: n0dev
- */
-
 #include "../include/utils.h"
 
 double convert_m_to_au (double km)

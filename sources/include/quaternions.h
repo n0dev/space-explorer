@@ -14,12 +14,6 @@ typedef struct {
 	double z;
 } POSITION;
 
-typedef struct {
-	double x;
-	double y;
-	double z;
-} VEC3;
-
 typedef double Mat9[9];
 typedef double Mat16[16];
 

@@ -10,18 +10,21 @@ void quatConjugate(Quat& qr, const Quat& qa)
     qr.qz = -qa.qz;
 }
 
-double quatMagnitude(const Quat& q) {
+double quatMagnitude(const Quat& q)
+{
 	return sqrt(q.qw * q.qw + q.qx * q.qx + q.qy * q.qy + q.qz * q.qz);
 }
 
-void quatMultiply(Quat& qr, const Quat& qa, const Quat& qb) {
+void quatMultiply(Quat& qr, const Quat& qa, const Quat& qb)
+{
 	qr.qw = qa.qw*qb.qw - qa.qx*qb.qx - qa.qy*qb.qy - qa.qz*qb.qz; /* (Q1 * Q2).w = (w1w2 - x1x2 - y1y2 - z1z2) */
 	qr.qx = qa.qw*qb.qx + qa.qx*qb.qw + qa.qy*qb.qz - qa.qz*qb.qy; /* (Q1 * Q2).x = (w1x2 + x1w2 + y1z2 - z1y2) */
 	qr.qy = qa.qw*qb.qy - qa.qx*qb.qz + qa.qy*qb.qw + qa.qz*qb.qx; /* (Q1 * Q2).y = (w1y2 - x1z2 + y1w2 + z1x2) */
 	qr.qz = qa.qw*qb.qz + qa.qx*qb.qy - qa.qy*qb.qx + qa.qz*qb.qw; /* (Q1 * Q2).z = (w1z2 + x1y2 - y1x2 + z1w2) */
 }
 
-void quatNormalise(Quat& q) {
+void quatNormalise(Quat& q)
+{
 	double norm = quatMagnitude(q);
 	q.qw = q.qw/norm;
 	q.qx = q.qx/norm;
@@ -29,8 +32,8 @@ void quatNormalise(Quat& q) {
 	q.qz = q.qz/norm;
 }
 
-void quatToMatrix(Quat *q, Mat16 Mat) {
-
+void quatToMatrix(Quat *q, Mat16 Mat)
+{
 	static double xx;
 	static double xy;
 	static double xz;

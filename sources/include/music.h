@@ -1,10 +1,11 @@
-#include <AL/al.h>
-#include <AL/alc.h>
-#include <sndfile.h>
-#include <iomanip>
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iomanip>
+
+#include <AL/al.h>
+#include <AL/alc.h>
+#include <sndfile.h>
 
 bool InitOpenAL(const char* DeviceName = NULL);
 

@@ -48,27 +48,30 @@ class Planet
  public:
 	Planet(string name, int radius, string t);
 
-
-	void add_rings(int inner_radius, int outer_radius, string t);
+    /// Configuration of the planet
+	void setRings(int inner_radius, int outer_radius, string t);
 	void setOrbit(const EllipticalOrbit& orbit);
+	void setAxialTilt(double deg);
+
+    /// Display of the planet
+    void draw();
+	void drawOrbit();
+
+
+
+
+	/// TODO HERE
 	void add_rotation(UniformRotation rot);
 	void add_moon();
-	void draw();
-	void draw_orbit();
 
 	// Atmosphere related methods
 	void set_atm_height(int height);
 	void add_atmosphere(Atmosphere atm);
 	void draw_atm();
 
-	// Light related methods
-	void light();
-
-	// Easy accessors
-	double axial_tilt = 23.6;
-
  private:
 	string name = "";
+	double m_axialTilt = 0.0;
 	int distance_from_sun = 0;
 	int radius = 0;
 	double x=0.0, y=0.0, z=0.0;

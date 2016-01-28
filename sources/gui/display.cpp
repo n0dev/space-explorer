@@ -1,16 +1,7 @@
-/*
- * display.cpp
- *
- *  Created on: 26 août 2013
- *      Author: n0dev
- */
-
-
 #include <stdlib.h>
 #include <stdio.h>
 
 #include "../include/utils.h"
-
 
 void display_actual_speed(char* text, double speed)
 {

@@ -2,9 +2,6 @@
 #define P_SIZE 3
 #define C_SIZE 3
 
-/* texture Id */
-extern GLuint texEarth;
-extern GLuint texEarthN;
 
 /* Stars and galaxies */
 extern GLuint Sky;

@@ -1,6 +1,7 @@
+#include <iostream>
+
 #include <GL/glew.h>
 #include <SDL/SDL.h>
-#include <iostream>
 #include <FTGL/ftgl.h>
 
 #include "../include/gui.h"
@@ -116,22 +117,16 @@ void gui_init(void)
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-
-	//printf("[+] Video mode: %dx%d, bbp: %d\n", pScreen->w, pScreen->h, pScreen->format->BitsPerPixel);
-	//printf("[+] Video information: %d x %d pixels\n", videoInfo->current_w, videoInfo->current_h);
-
-	/* Activation du support UNICODE */
+	// Activation of the Unicode support
 	SDL_EnableUNICODE(1);
 
-	/* Font initialization */
+	// Font library initialization
 	font = new FTPixmapFont("fonts/wendy.ttf");
 
 	// If something went wrong, bail out.
 	if (font->Error())
 		exit(1);
 
-	//font->CharMap(ft_encoding_unicode);
 	font->FaceSize(15);
 
 	//SDL_ShowCursor(SDL_DISABLE);

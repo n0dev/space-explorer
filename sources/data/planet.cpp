@@ -68,7 +68,12 @@ void draw_disk(int inner_radius, int outter_radius, int slices) {
 	glEnd();
 }
 
-void Planet::add_rings(int inner_radius, int outer_radius, string t)
+void Planet::setAxialTilt(double deg)
+{
+    m_axialTilt = deg;
+}
+
+void Planet::setRings(int inner_radius, int outer_radius, string t)
 {
 	is_ring = true;
 
@@ -97,7 +102,9 @@ void Planet::draw(void)
 	glPushMatrix();
 	glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
 
-	glRotatef(axial_tilt, 1, 0, 0);
+    if (m_axialTilt != 0) {
+        glRotatef(m_axialTilt, 1, 0, 0);
+    }
 
 	glPushMatrix();
 	glTranslated(0.0, 0.0, 1.5 * this->radius);
@@ -177,18 +184,12 @@ void Planet::setOrbit(const EllipticalOrbit& orbit) {
 	this->x = this->Orbit.SemiMajorAxis;
 }
 
-void Planet::draw_orbit(void)
+void Planet::drawOrbit(void)
 {
 	glPushMatrix();
 	glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
 	glCallList(this->orb);
 	glPopMatrix();
-}
-
-void Planet::light(void)
-{
-	//GLfloat light_diffuse[] = {x-spaceship->pos.x+15e9, y-spaceship->pos.y, z-spaceship->pos.z, 1.0 };
-	//glLightfv(GL_LIGHT0, GL_POSITION, light_diffuse);
 }
 
 void Planet::add_moon(void)

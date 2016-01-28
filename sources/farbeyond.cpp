@@ -1,13 +1,3 @@
-/*
- ============================================================================
- Name        : spacesimu.c
- Author      : Nicolas Hess
- Version     :
- Copyright   : Your copyright notice
- Description : Space Simulator, drive your own spaceship throught space
- ============================================================================
- */
-
 #include <math.h>
 #include <time.h>
 #include <stdio.h>
@@ -19,12 +9,10 @@
 #include <GL/glew.h>
 #include <GL/glut.h>
 #include <GL/gl.h>
-#include <GL/glext.h>
 
 #include <FTGL/ftgl.h>
 
 #include "include/glsl.h"
-#include "include/lights.h"
 #include "gameplay/events.h"
 #include "include/gui.h"
 #include "include/gameplay.h"
@@ -34,7 +22,6 @@
 #include "data/planet.h"
 #include "include/utils.h"
 #include "include/music.h"
-#include "textures/loadpng.h"
 
 using namespace std;
 
@@ -59,7 +46,7 @@ int main(int argc, char *argv[])
 	/* Initialize OpenGL context */
 	gui_init();
 
-	/* Load star catalog and inilialize opengl background */
+	/* Load star catalog and initialize opengl background */
 	init_sky();
 	init_galaxies();
 
@@ -69,21 +56,7 @@ int main(int argc, char *argv[])
 	/* Initialize everything for the spaceship. It has to be a global variable */
 	spaceship = new Observer();
 
-	GLShader skyFromSpace("shaders/SkyFromSpace.vert", "shaders/SkyFromSpace.frag");
-
 	srand((unsigned int) time(NULL));
-
-	/* Chargement des textures */
-	if (!(texEarth = loadPNGTexture("./planets/textures/earth.png"))) {
-		fprintf(stderr, "failed to load earth! aborting\n");
-		exit(1);
-	}
-
-	/* Chargement des textures */
-	if (!(texEarthN = loadPNGTexture("./planets/textures/earth_night.png"))) {
-		fprintf(stderr, "failed to load earth! aborting\n");
-		exit(1);
-	}
 
 	/* Sun */
 	Planet Sun("Sun", 696 * 1e6, "sun.png");
@@ -119,12 +92,12 @@ int main(int argc, char *argv[])
 	e.Eccentricity = 0.048775;
 	Jupiter.setOrbit(e);
 
-	Planet Saturn("Saturn", 60000000, "saturn.png");
+	Planet saturn("Saturn", 60000000, "saturn.png");
 	e.SemiMajorAxis = 1433449370000;
 	e.Eccentricity = 0.055723219;
-	Saturn.setOrbit(e);
-	Saturn.set_atm_height(5000000);
-	Saturn.add_rings(74500000, 140220000, "./planets/textures/saturnrings.png");
+	saturn.setOrbit(e);
+	saturn.setAxialTilt(26.73);
+	saturn.setRings(74500000, 140220000, "./planets/textures/saturnrings.png");
 
 	Planet Uranus("Uranus", 25500000, "uranus.png");
 	e.SemiMajorAxis = 2876679082000;
@@ -188,31 +161,31 @@ int main(int argc, char *argv[])
 			//Sun.light();
 
 			Mercury.draw();
-			Mercury.draw_orbit();
+			Mercury.drawOrbit();
 
 			Venus.draw();
-			Venus.draw_orbit();
+			Venus.drawOrbit();
 
 			Earth.draw();
-			Earth.draw_orbit();
+			Earth.drawOrbit();
 
 			Mars.draw();
-			Mars.draw_orbit();
+			Mars.drawOrbit();
 
 			Jupiter.draw();
-			Jupiter.draw_orbit();
+			Jupiter.drawOrbit();
 
-			Saturn.draw();
-			Saturn.draw_orbit();
+			saturn.draw();
+			saturn.drawOrbit();
 
 			Uranus.draw();
-			Uranus.draw_orbit();
+			Uranus.drawOrbit();
 
 			Neptune.draw();
-			Neptune.draw_orbit();
+			Neptune.drawOrbit();
 
 			Pluto.draw();
-			Pluto.draw_orbit();
+			Pluto.drawOrbit();
 		}
 
 		// Galaxy example
