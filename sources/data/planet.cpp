@@ -1,17 +1,10 @@
-/*
- * planet.c
- *
- *  Created on: 15 avr. 2013
- *      Author: n0dev
- */
-
-#include <GL/glew.h>
-#include <GL/glu.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include <FTGL/ftgl.h>
+#include <GL/glew.h>
+#include <GL/glu.h>
 
 #include "planet.h"
 #include "../include/gui.h"
@@ -49,6 +42,11 @@ Planet::Planet(string name, int radius, string t)
 
 	// Ground
 	//glGenBuffers(1, &buf);
+
+	// Lights
+	sunLight = new GLShader("shaders/sunlight.vert", "shaders/sunlight.frag");
+	idGroundMap = glGetUniformLocation(sunLight->program, "tex");
+	idSunPosition = glGetUniformLocation(sunLight->program, "sunPosition");
 }
 
 inline float deg2rad(float deg) {
@@ -99,31 +97,42 @@ void Planet::draw(void)
 	glPushMatrix();
 	glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
 
+	glRotatef(axial_tilt, 1, 0, 0);
+
 	glPushMatrix();
 	glTranslated(0.0, 0.0, 1.5 * this->radius);
 	glRasterPos2f(0, 0);
 	font->Render((this->name).c_str(), -1, *loc);
 	glPopMatrix();
 
-	glEnable(GL_TEXTURE_2D);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-	glBindTexture(GL_TEXTURE_2D, this->texture);
+	sunLight->begin();
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glUniform1i(idGroundMap, 1);
+	const GLfloat vecSunPosition[3] = {(GLfloat) -spaceship->pos.x, (GLfloat) -spaceship->pos.y, (GLfloat) -spaceship->pos.z};
+    glUniform3fv(idSunPosition, 1, vecSunPosition);
+
 	glCallList(this->list);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glDisable(GL_TEXTURE_2D);
+	glActiveTexture(GL_TEXTURE0);
+	sunLight->end();
 
 	if (is_ring) {
 		glEnable(GL_TEXTURE_2D);
+		//glActiveTexture(GL_TEXTURE1);
+		//glGenTextures(1, &this->texture_ring);
 		glBindTexture(GL_TEXTURE_2D, this->texture_ring);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
+		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);*/
+		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 		glCallList(this->list_ring);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
@@ -132,30 +141,12 @@ void Planet::draw(void)
 	glPopMatrix();
 }
 
-void Planet::draw_atm()
+void Planet::draw_atm(void)
 {
-	if(this->Atm.Height > 0) {
-
-		GLUquadricObj *sphere = NULL;
-		sphere = gluNewQuadric();
-		gluQuadricDrawStyle(sphere, GLU_FILL);
-		gluQuadricNormals(sphere, GLU_SMOOTH);
-		gluQuadricTexture(sphere, 1);
-
-		glPushMatrix();
-		glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
-
-		glEnable(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-		gluSphere(sphere, this->radius + this->Atm.Height, 1000, 1000);
-		glDisable(GL_TEXTURE_2D);
-
-		glPopMatrix();
-	}
+    glPushMatrix();
+	glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
+    glCallList(this->m_listAtm);
+    glPopMatrix();
 }
 
 void Planet::setOrbit(const EllipticalOrbit& orbit) {
@@ -164,7 +155,7 @@ void Planet::setOrbit(const EllipticalOrbit& orbit) {
 	/* Build the orbit */
 	float x, y, z, r;
 	int t;
-	float num = 5400;
+	float num = 6000;
 	GLUquadricObj *o = NULL;
 	o = gluNewQuadric();
 	gluQuadricNormals(o, GLU_SMOOTH);
@@ -174,7 +165,7 @@ void Planet::setOrbit(const EllipticalOrbit& orbit) {
 	for (t = 0; t <= int(num); t += 1) {
 		r = deg2rad(360.0*t/num);
 		x = this->Orbit.SemiMajorAxis * sin(r);
-		y = this->Orbit.SemiMajorAxis / (sqrt(1.0 - this->Orbit.Eccentricity* this->Orbit.Eccentricity)) * cos(r);
+		y = this->Orbit.SemiMajorAxis / (sqrt(1.0 - this->Orbit.Eccentricity * this->Orbit.Eccentricity)) * cos(r);
 		z = 0;
 		glVertex3f(x, y, z);
 	}
@@ -208,6 +199,30 @@ void Planet::add_moon(void)
 void Planet::set_atm_height(int height)
 {
 	this->Atm.Height = height;
+
+	if(height > 0) {
+
+        // Create the list
+		GLUquadricObj *sphere = NULL;
+		sphere = gluNewQuadric();
+		gluQuadricDrawStyle(sphere, GLU_FILL);
+		gluQuadricNormals(sphere, GLU_SMOOTH);
+		gluQuadricTexture(sphere, 1);
+
+		/*glEnable(GL_TEXTURE_2D);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);*/
+
+		this->m_listAtm = glGenLists(3);
+        glNewList(this->m_listAtm, GL_COMPILE);
+        gluSphere(sphere, this->radius + this->Atm.Height, 1000, 1000);
+        glEndList();
+        gluDeleteQuadric(sphere);
+		//glDisable(GL_TEXTURE_2D);
+	}
 }
 
 void Planet::add_atmosphere(Atmosphere atm)

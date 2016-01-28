@@ -9,7 +9,10 @@
 #define PLANET_H_
 
 #include <iostream>
+
 #include <FTGL/ftgl.h>
+
+#include "../include/glsl.h"
 
 using namespace std;
 
@@ -42,8 +45,10 @@ typedef struct {
 
 class Planet
 {
-public:
+ public:
 	Planet(string name, int radius, string t);
+
+
 	void add_rings(int inner_radius, int outer_radius, string t);
 	void setOrbit(const EllipticalOrbit& orbit);
 	void add_rotation(UniformRotation rot);
@@ -51,15 +56,18 @@ public:
 	void draw();
 	void draw_orbit();
 
-	/* Atmosphere related methods */
+	// Atmosphere related methods
 	void set_atm_height(int height);
 	void add_atmosphere(Atmosphere atm);
 	void draw_atm();
 
-	/* Light related methods */
+	// Light related methods
 	void light();
 
-private:
+	// Easy accessors
+	double axial_tilt = 23.6;
+
+ private:
 	string name = "";
 	int distance_from_sun = 0;
 	int radius = 0;
@@ -67,6 +75,7 @@ private:
 	GLuint list;
 	GLuint texture;
 	GLuint orb = 0;
+
 
 	// Ground information
 	//GLuint buf; // Our Vertex Buffer Object
@@ -79,11 +88,18 @@ private:
 	// Rings
 	bool is_ring = false;
 	int outer_radius = 0, inner_radius = 0;
+
+	GLuint m_listAtm = 0;
 	GLuint list_ring = 0;
 	GLuint texture_ring = 0;
 
 	// Misc
 	FTPoint *loc;
+
+	// Lights
+	GLShader *sunLight;
+	GLuint idGroundMap;
+	GLuint idSunPosition;
 };
 
 #endif /* PLANET_H_ */

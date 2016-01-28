@@ -1,9 +1,12 @@
+#ifndef QUATERNIONS_H
+#define QUATERNIONS_H
+
 typedef struct {
 	double qw;
 	double qx;
 	double qy;
 	double qz;
-} QUAT;
+} Quat;
 
 typedef struct {
 	double x;
@@ -17,15 +20,17 @@ typedef struct {
 	double z;
 } VEC3;
 
-typedef double MAT9[9];
-typedef double MAT16[16];
+typedef double Mat9[9];
+typedef double Mat16[16];
 
-void quatConjugate(QUAT *qr, QUAT *qa);
+void quatConjugate(Quat& qr, const Quat& qa);
 
-double quatMagnitude(QUAT *qa);
+double quatMagnitude(const Quat& q);
 
-void quatMultiply(QUAT *qr, QUAT *qa, QUAT *qb);
+void quatMultiply(Quat& qr, const Quat& qa, const Quat& qb);
 
-void quatNormalise(QUAT *q);
+void quatNormalise(Quat& q);
 
-void quatToMatrix(QUAT *q, MAT16 Mat);
+void quatToMatrix(Quat *q, Mat16 Mat);
+
+#endif

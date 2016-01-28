@@ -61,7 +61,6 @@ void gui_init(void)
 	/* the flags to pass to SDL_SetVideoMode */
 	videoFlags = SDL_OPENGL; /* Enable OpenGL in SDL */
 	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
-	//SDL_HWSURFACE|SDL_DOUBLEBUF
 	videoFlags |= SDL_HWPALETTE; /* Store the palette in hardware */
 	videoFlags |= SDL_RESIZABLE; /* Enable window resizing */
 

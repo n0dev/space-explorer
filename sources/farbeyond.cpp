@@ -14,9 +14,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <iostream>
-
 
 #include <GL/glew.h>
 #include <GL/glut.h>
@@ -25,7 +23,6 @@
 
 #include <FTGL/ftgl.h>
 
-#include "include/main.h"
 #include "include/glsl.h"
 #include "include/lights.h"
 #include "gameplay/events.h"
@@ -72,21 +69,7 @@ int main(int argc, char *argv[])
 	/* Initialize everything for the spaceship. It has to be a global variable */
 	spaceship = new Observer();
 
-	GLuint program;
-	program = glCreateProgram();
-	GLuint vs = LoadShader(GL_VERTEX_SHADER, "shaders/SkyFromSpace2.vert");
-	GLuint fs = LoadShader(GL_FRAGMENT_SHADER, "shaders/SkyFromSpace2.frag");
-	glAttachShader(program, vs);
-	glAttachShader(program, fs);
-	LinkShader(program);
-
-	/*GLuint programEarth;
-	programEarth = glCreateProgram();
-	GLuint vsEarth = LoadShader(GL_VERTEX_SHADER, "shaders/EarthFromSpace.vert");
-	GLuint fsEarth = LoadShader(GL_FRAGMENT_SHADER, "shaders/EarthFromSpace.frag");
-	glAttachShader(programEarth, vsEarth);
-	glAttachShader(programEarth, fsEarth);
-	LinkShader(programEarth);*/
+	GLShader skyFromSpace("shaders/SkyFromSpace.vert", "shaders/SkyFromSpace.frag");
 
 	srand((unsigned int) time(NULL));
 
@@ -101,14 +84,6 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "failed to load earth! aborting\n");
 		exit(1);
 	}
-
-	/*GLuint programLight;
-	programLight = glCreateProgram();
-	GLuint ligthVert = LoadShader(GL_VERTEX_SHADER, "shaders/ligth.vert");
-	GLuint lightFrag = LoadShader(GL_FRAGMENT_SHADER, "shaders/ligth.frag");
-	glAttachShader(programLight, ligthVert);
-	glAttachShader(programLight, lightFrag);
-	LinkShader(programLight);*/
 
 	/* Sun */
 	Planet Sun("Sun", 696 * 1e6, "sun.png");
@@ -129,6 +104,7 @@ int main(int argc, char *argv[])
 	Planet Earth("Earth", 6357000, "earth.png");
 	e.SemiMajorAxis = 149598261000.0;
 	e.Eccentricity = 0.01671123;
+	//Earth.set_atm_height(500000);
 	Earth.setOrbit(e);
 
 	//Planet Moon("Moon", 1700000, "moon.png");
@@ -165,10 +141,7 @@ int main(int argc, char *argv[])
 	e.Eccentricity = 0.24880766;
 	Pluto.setOrbit(e);
 
-	initEarthGd(Rt, 0, 0, 2.5 * Rg, texEarth);
-	initEarthAtm(Rt + 50000, 0, 0, 2.5 * Rg);
-
-	// Initialisation d'OpenAL
+	// Initialization of OpenAL
 	InitOpenAL();
 	PlaySound();
 
@@ -197,7 +170,7 @@ int main(int argc, char *argv[])
 		ellapsed_time = start_time - last_time;
 		last_time = start_time;
 
-		/* Mise à jour de l'état du jeu à partir des évènements */
+		// Update events
 		process_events();
 		evolve();
 		spaceship->update();
@@ -230,7 +203,6 @@ int main(int argc, char *argv[])
 			Jupiter.draw_orbit();
 
 			Saturn.draw();
-			//Saturn.draw_atm();
 			Saturn.draw_orbit();
 
 			Uranus.draw();
@@ -241,30 +213,6 @@ int main(int argc, char *argv[])
 
 			Pluto.draw();
 			Pluto.draw_orbit();
-
-			/*//glPushMatrix();
-			//glTranslated(0.0, 20 * 1e7, 0.0);
-
-			glUseProgram(programEarth);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, texEarth);
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, texEarthN);
-			glUniform1i(idGroundColorMap, 1);
-			glUniform1i(idGroundColorMapNight, 2);
-			glUniform3fv(idGroundSunPosition, 1, vecSunPosition);
-			glUniform3fv(idGroundCamPosition, 1, vecCamPosition);
-			glCallList(EarthGd);
-			glUseProgram(0);
-
-			// Program for the Atm
-			glUseProgram(program);
-			glUniform3fv(idCamPosition, 1, vecCamPosition);
-			glUniform3fv(idSunPosition, 1, vecSunPosition);
-			glCallList(EarthAtm);
-			glUseProgram(0);
-
-			//glPopMatrix();*/
 		}
 
 		// Galaxy example
@@ -323,8 +271,7 @@ int main(int argc, char *argv[])
 		font->Render(distance, -1, loc1);
 
 		// Matrix
-		snprintf(coord, 79, "Coord: (x=%.4g, y=%.4g, z=%.4g)", spaceship->pos.x,
-						spaceship->pos.y, spaceship->pos.z);
+		snprintf(coord, 79, "Coord: (x=%.4g, y=%.4g, z=%.4g)", spaceship->pos.x, spaceship->pos.y, spaceship->pos.z);
 		loc1.Y(pScreen->h - 3*14);
 		font->Render(coord, -1, loc1);
 

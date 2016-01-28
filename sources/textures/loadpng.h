@@ -1,13 +1,8 @@
-/*
- * 
- */
+#ifndef LOADPNG_H_
+#define LOADPNG_H_
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <GL/gl.h>
 
 GLuint loadPNGTexture(const char *filename);
 
-#ifdef __cplusplus
-}
 #endif
