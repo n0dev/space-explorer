@@ -10,7 +10,7 @@
 using namespace std;
 
 SDL_Surface * pScreen;
-int videoFlags;
+Uint32 videoFlags;
 const SDL_VideoInfo *videoInfo;
 
 FTPixmapFont *font;
@@ -59,7 +59,7 @@ void gui_init(void)
 		fprintf(stderr, "Video query failed: %s\n", SDL_GetError());
 	}
 
-	/* the flags to pass to SDL_SetVideoMode */
+	// Flags to pass to SDL_SetVideoMode
 	videoFlags = SDL_OPENGL; /* Enable OpenGL in SDL */
 	videoFlags |= SDL_GL_DOUBLEBUFFER; /* Enable double buffering */
 	videoFlags |= SDL_HWPALETTE; /* Store the palette in hardware */
@@ -85,9 +85,8 @@ void gui_init(void)
 			cerr << "impossible d'initialiser SDL_GL_MULTISAMPLESAMPLES sur 6 buffers";
 	}
 
-	/* get a SDL surface */
-	pScreen = SDL_SetVideoMode(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_BPP,
-			videoFlags);
+	// Get a SDL surface
+	pScreen = SDL_SetVideoMode(DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT, SCREEN_BPP, videoFlags);
 
 	atexit(SDL_Quit);
 	SDL_WM_SetCaption(PROGRAM_TITLE, NULL);

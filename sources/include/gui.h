@@ -1,3 +1,6 @@
+#ifndef GUI_H_
+#define GUI_H_
+
 #include <SDL/SDL.h>
 #include <FTGL/ftgl.h>
 
@@ -6,11 +9,10 @@
 
 #define PROGRAM_TITLE "Space Simulator"
 #define PROGRAM_AUTHOR "Nicolas Hess"
-#define PROGRAM_COPYRIGHT "2013-2014 - All rights reserved"
 #define SCREEN_BPP 32
 
 extern SDL_Surface * pScreen;
-extern int videoFlags;
+extern Uint32 videoFlags;
 extern const SDL_VideoInfo *videoInfo;
 
 // Resize the actual window with these dimensions in pixels
@@ -28,3 +30,5 @@ extern FTGLPixmapFont *font;
 void display_actual_speed(char* text, double speed);
 
 void display_actual_distance(char* text, double distance);
+
+#endif /* GUI_H_ */

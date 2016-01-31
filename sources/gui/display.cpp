@@ -5,7 +5,7 @@
 
 void display_actual_speed(char* text, double speed)
 {
-	static double abs_speed = abs(speed);
+	double abs_speed = (speed < 0.0) ? -speed : speed;
 	if (abs_speed < 149597870000) {
 		snprintf(text, 79, "Spaceship speed: %.0f KM/S", speed/1000.0);
 	}

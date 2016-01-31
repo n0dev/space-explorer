@@ -1,26 +1,19 @@
-#include <math.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
 #include <iostream>
 
 #include <GL/glew.h>
-#include <GL/glut.h>
-#include <GL/gl.h>
 
 #include <FTGL/ftgl.h>
 
-#include "include/glsl.h"
 #include "gameplay/events.h"
 #include "include/gui.h"
 #include "include/gameplay.h"
 #include "gameplay/observer.h"
 #include "data/objects.h"
 #include "data/importdb.h"
-#include "data/planet.h"
-#include "include/utils.h"
+#include "include/data/planet.h"
 #include "include/music.h"
 
 using namespace std;
@@ -31,26 +24,25 @@ int main(int argc, char *argv[])
 	cout << endl << "-- " << PROGRAM_TITLE << endl << "-- " << PROGRAM_AUTHOR;
 	cout << endl << "---------------------" << endl << endl;
 
-	GLfloat fps = 0.0;
+	GLdouble fps = 0.0;
 
 	char speed[80];
 	char distance[80];
 	char coord[80];
-	double Fdistance;
+	double abs_distance;
 
-	/* Import the Star Database */
-	//importStarsDB();
+	// Import the Star Database
 	importStarsDBHip();
 	import_galaxies();
 
-	/* Initialize OpenGL context */
+	// Initialize OpenGL context
 	gui_init();
 
-	/* Load star catalog and initialize opengl background */
+	// Load star catalog and initialize OpenGL background
 	init_sky();
 	init_galaxies();
 
-	/* Initialize the Gameplay */
+	// Initialize the game play
 	joydetect();
 
 	/* Initialize everything for the spaceship. It has to be a global variable */
@@ -58,61 +50,19 @@ int main(int argc, char *argv[])
 
 	srand((unsigned int) time(NULL));
 
-	/* Sun */
-	Planet Sun("Sun", 696 * 1e6, "sun.png");
+	// Sun
+	//Planet Sun("Sun", 696 * 1e6, "sun.png");
 
-	EllipticalOrbit e;
-
-	/* Mercury */
-	Planet Mercury("Mercury", 2400000, "mercury.png");
-	e.SemiMajorAxis = 57909100000.0;
-	e.Eccentricity = 0.205630;
-	Mercury.setOrbit(e);
-
-	Planet Venus("Venus", 6050000, "venus.png");
-	e.SemiMajorAxis = 108208000000.0;
-	e.Eccentricity = 0.0067;
-	Venus.setOrbit(e);
-
-	Planet Earth("Earth", 6357000, "earth.png");
-	e.SemiMajorAxis = 149598261000.0;
-	e.Eccentricity = 0.01671123;
-	//Earth.set_atm_height(500000);
-	Earth.setOrbit(e);
-
-	//Planet Moon("Moon", 1700000, "moon.png");
-
-	Planet Mars("Mars", 3350000, "mars.png");
-	e.SemiMajorAxis = 227939100000;
-	e.Eccentricity = 0.093315;
-	Mars.setOrbit(e);
-
-	Planet Jupiter("Jupiter", 71000000, "jupiter.png");
-	e.SemiMajorAxis = 778547200000;
-	e.Eccentricity = 0.048775;
-	Jupiter.setOrbit(e);
-
-	Planet saturn("Saturn", 60000000, "saturn.png");
-	e.SemiMajorAxis = 1433449370000;
-	e.Eccentricity = 0.055723219;
-	saturn.setOrbit(e);
-	saturn.setAxialTilt(26.73);
+	Planet Mercury("mercury.json");
+	Planet Venus("venus.json");
+	Planet Earth("earth.json");
+	Planet Mars("mars.json");
+	Planet Jupiter("jupiter.json");
+	Planet saturn("saturn.json");
 	saturn.setRings(74500000, 140220000, "./planets/textures/saturnrings.png");
-
-	Planet Uranus("Uranus", 25500000, "uranus.png");
-	e.SemiMajorAxis = 2876679082000;
-	e.Eccentricity = 0.044405586;
-	Uranus.setOrbit(e);
-
-	Planet Neptune("Neptune", 24500000, "neptune.png");
-	e.SemiMajorAxis = 4503443661000;
-	e.Eccentricity = 0.011214269;
-	Neptune.setOrbit(e);
-
-	Planet Pluto("Pluto", 1150000, "pluto.png");
-	e.SemiMajorAxis = 5874000000000;
-	e.Eccentricity = 0.24880766;
-	Pluto.setOrbit(e);
+	Planet Uranus("uranus.json");
+	Planet Neptune("neptune.json");
+	Planet Pluto("pluto.json");
 
 	// Initialization of OpenAL
 	InitOpenAL();
@@ -122,8 +72,7 @@ int main(int argc, char *argv[])
 	quatToMatrix(&spaceship->quater, spaceship->matrix);
 	spaceship->update();
 
-	Uint32 last_time = SDL_GetTicks();
-	Uint32 ellapsed_time;
+	Uint32 elapsed_time;
 	Uint32 start_time;
 
 	while (!globalInput.key[SDLK_ESCAPE] && !globalInput.quit) {
@@ -137,11 +86,7 @@ int main(int argc, char *argv[])
 		/* These are to calculate our fps */
 		static GLint T0 = 0;
 		static GLint Frames = 0;
-
 		start_time = SDL_GetTicks();
-
-		ellapsed_time = start_time - last_time;
-		last_time = start_time;
 
 		// Update events
 		process_events();
@@ -149,15 +94,15 @@ int main(int argc, char *argv[])
 		spaceship->update();
 
 		// Distance from (0,0,0)
-		Fdistance = spaceship->get_distance();
+        abs_distance = spaceship->get_distance();
 
 		// No need to display planets if we are beyond the solar system
-		if (Fdistance < 950 * 1.5e13) {
+		if (abs_distance < 950 * 1.5e13) {
 
 			glActiveTexture(GL_TEXTURE0);
 
 			// ## TODO ##: Sun as a planet -> star or object
-			Sun.draw();
+			//Sun.draw();
 			//Sun.light();
 
 			Mercury.draw();
@@ -189,7 +134,7 @@ int main(int argc, char *argv[])
 		}
 
 		// Galaxy example
-		if (Fdistance < 150 * 1e21) {
+		if (abs_distance < 150 * 1e21) {
 			glPushMatrix();
 			glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
 			glCallList(Sky);
@@ -197,7 +142,7 @@ int main(int argc, char *argv[])
 		}
 
 		// Edge of the universe
-		else if (Fdistance < 150 * 1e28) {
+		else if (abs_distance < 150 * 1e28) {
 			glPushMatrix();
 			glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
 			glCallList(Galaxy_Sky);
@@ -226,7 +171,7 @@ int main(int argc, char *argv[])
 		glPushMatrix();
 		glDisable(GL_DEPTH_TEST);
 		glLoadIdentity();
-		glTranslatef (0.375, 0.375, 0.); // exact pixel precision
+		glTranslatef (0.375, 0.375, 0.0); // exact pixel precision
 
 		// Set text color
 		glColor3f(1.0f,1.0f,1.0f);
@@ -239,7 +184,7 @@ int main(int argc, char *argv[])
 		font->Render(speed, -1, loc1);
 
 		// Distance
-		display_actual_distance(distance, Fdistance);
+		display_actual_distance(distance, abs_distance);
 		loc1.Y(pScreen->h - 2*14);
 		font->Render(distance, -1, loc1);
 
@@ -268,8 +213,8 @@ int main(int argc, char *argv[])
 
 		glBegin(GL_QUADS);
 		glVertex2i(10, 155);
-		glVertex2i(10, -0.00512 * (double) (int) globalInput.speed + 155.0);
-		glVertex2i(20, -0.00512 * (double) (int) globalInput.speed + 155.0);
+		glVertex2i(10, (int) (-0.00512 * (double) globalInput.speed + 155.0));
+		glVertex2i(20, (int) (-0.00512 * (double) globalInput.speed + 155.0));
 		glVertex2i(20, 155);
 		glEnd();
 
@@ -285,7 +230,7 @@ int main(int argc, char *argv[])
 		{
 			GLint t = SDL_GetTicks();
 			if (t - T0 >= 5000) {
-				GLfloat seconds = (t - T0) / 1000.0;
+				GLdouble seconds = (t - T0) / 1000.0;
 				fps = Frames / seconds;
 				T0 = t;
 				Frames = 0;
@@ -307,9 +252,9 @@ int main(int argc, char *argv[])
 		glFlush();
 		SDL_GL_SwapBuffers();
 
-		ellapsed_time = SDL_GetTicks() - start_time;
-		if (ellapsed_time <= 10) {
-			SDL_Delay(10 - ellapsed_time);
+        elapsed_time = SDL_GetTicks() - start_time;
+		if (elapsed_time <= 10) {
+			SDL_Delay(10 - elapsed_time);
 		}
 	}
 	return 0;

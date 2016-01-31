@@ -1,10 +1,3 @@
-/*
- * gameplay.h
- *
- *  Created on: 24 août 2013
- *      Author: n0dev
- */
-
 #ifndef GAMEPLAY_H_
 #define GAMEPLAY_H_
 

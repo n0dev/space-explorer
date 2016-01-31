@@ -1,79 +1,127 @@
 #include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <fstream>
 
 #include <FTGL/ftgl.h>
 #include <GL/glew.h>
-#include <GL/glu.h>
 
-#include "planet.h"
+
+#include "rapidjson/document.h"
+#include "../include/data/planet.h"
 #include "../include/gui.h"
 #include "../textures/loadpng.h"
 #include "../gameplay/observer.h"
 
-Planet::Planet(string name, int radius, string t)
+using namespace rapidjson;
+
+const std::string g_planetPath = "planets/";
+const std::string g_texturePath = "planets/textures/";
+
+inline double deg2rad(double deg) {
+    return deg * 3.1415 / 180.0;
+}
+
+Planet::Planet(std::string json_file)
 {
-	// Store all values
-	this->radius = radius;
-	this->name = name;
+    // Open and parse json file
+    std::string json_path = g_planetPath;
+    json_path += json_file;
+    std::ifstream file(json_path);
+    if (!file.good()) {
+        std::cerr << "Cannot open " << json_file << std::endl;
+        exit(1);
+    }
+    std::string json((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-	// Texture
-	if (!(this->texture = loadPNGTexture(("planets/textures/" + t).c_str()))) {
-		fprintf(stderr, "failed to load %s! aborting\n", t.c_str());
-		exit(1);
-	}
+    Document document;
+    document.Parse(json.c_str());
 
-	// Create the list
-	GLUquadricObj *sphere = NULL;
-	sphere = gluNewQuadric();
-	gluQuadricDrawStyle(sphere, GLU_FILL);
-	gluQuadricNormals(sphere, GLU_SMOOTH);
-	gluQuadricTexture(sphere, 1);
+    // Store all mandatory values
+    m_name = document["Name"].GetString();
+    m_radius = document["Radius"].GetDouble();
 
-	//Making a display list
-	list = glGenLists(1);
-	glNewList(list, GL_COMPILE);
-	gluSphere(sphere, this->radius, 1000, 1000);
-	glEndList();
-	gluDeleteQuadric(sphere);
+    // Load the ground texture
+    std::string texturePath = g_texturePath;
+    texturePath += std::string(document["GroundTexture"].GetString());
+    if (!(m_groundTexture = loadPNGTexture(texturePath.c_str()))) {
+        std::cerr << "Failed to load " << texturePath << "! aborting" << std::endl;
+        exit(1);
+    }
 
-	// Misc
-	loc = new FTPoint(0.0, 0.0);
+    if (document.HasMember("AxialTilt")) {
+        m_axialTilt = static_cast<GLfloat>(document["AxialTilt"].GetDouble());
+    }
 
-	// Ground
-	//glGenBuffers(1, &buf);
+    // Load orbit information and creates it
+    if (document.HasMember("Orbit")) {
+        if (document["Orbit"].HasMember("Aphelion")) {
+            m_orbit.Aphelion = document["Orbit"]["Aphelion"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("Perihelion")) {
+            m_orbit.Perihelion = document["Orbit"]["Perihelion"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("SemiMajorAxis")) {
+            m_orbit.SemiMajorAxis = document["Orbit"]["SemiMajorAxis"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("Eccentricity")) {
+            m_orbit.Eccentricity = document["Orbit"]["Eccentricity"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("Inclination")) {
+            m_orbit.Inclination = document["Orbit"]["Inclination"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("ArgumentOfPeriapsis")) {
+            m_orbit.ArgumentOfPeriapsis = document["Orbit"]["ArgumentOfPeriapsis"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("LongitudeOfAscendingNode")) {
+            m_orbit.LongitudeOfAscendingNode = document["Orbit"]["LongitudeOfAscendingNode"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("MeanAnomaly")) {
+            m_orbit.MeanAnomaly = document["Orbit"]["MeanAnomaly"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("OrbitalPeriod")) {
+            m_orbit.OrbitalPeriod = document["Orbit"]["OrbitalPeriod"].GetDouble();
+        }
+        if (document["Orbit"].HasMember("OrbitalSpeed")) {
+            m_orbit.OrbitalSpeed = document["Orbit"]["OrbitalSpeed"].GetDouble();
+        }
+        createOrbit();
+    }
 
-	// Lights
-	sunLight = new GLShader("shaders/sunlight.vert", "shaders/sunlight.frag");
-	idGroundMap = glGetUniformLocation(sunLight->program, "tex");
-	idSunPosition = glGetUniformLocation(sunLight->program, "sunPosition");
+    // Create the planet mesh
+    GLUquadricObj *sphere = NULL;
+    sphere = gluNewQuadric();
+    gluQuadricDrawStyle(sphere, GLU_FILL);
+    gluQuadricNormals(sphere, GLU_SMOOTH);
+    gluQuadricTexture(sphere, 1);
+    list = glGenLists(1);
+    glNewList(list, GL_COMPILE);
+    gluSphere(sphere, m_radius, 1000, 1000);
+    glEndList();
+    gluDeleteQuadric(sphere);
+
+    // Misc
+    loc = new FTPoint(0.0, 0.0);
+
+    // Lights
+    sunLight = new GLShader("../sources/shaders/sunlight.vert", "../sources/shaders/sunlight.frag");
+    idGroundMap = glGetUniformLocation(sunLight->program, "tex");
+    idSunPosition = glGetUniformLocation(sunLight->program, "sunPosition");
 }
 
-inline float deg2rad(float deg) {
-	return deg * 3.1415 / 180.0;
-}
-
-void draw_disk(int inner_radius, int outter_radius, int slices) {
-	int inc;
-	float theta;
+void draw_disk(int inner_radius, int outer_radius, int slices) {
+	double theta;
 
 	glBegin(GL_QUAD_STRIP);
-	for (inc = 0; inc <= slices; inc++) {
+	for (int inc = 0; inc <= slices; inc++) {
 		theta = inc * 2.0 * M_PI / slices;
 		glTexCoord2f(1.0, 0.0);
-		glVertex3f(outter_radius * cos(theta), outter_radius * sin(theta), 0.0);
+		glVertex3f(static_cast<GLfloat>(outer_radius * cos(theta)), static_cast<GLfloat>(outer_radius * sin(theta)), 0.0);
 		glTexCoord2f(0.0, 0.0);
-		glVertex3f(inner_radius * cos(theta), inner_radius * sin(theta), 0.0);
+		glVertex3f(static_cast<GLfloat>(inner_radius * cos(theta)), static_cast<GLfloat>(inner_radius * sin(theta)), 0.0);
 	}
 	glEnd();
 }
 
-void Planet::setAxialTilt(double deg)
-{
-    m_axialTilt = deg;
-}
-
-void Planet::setRings(int inner_radius, int outer_radius, string t)
+void Planet::setRings(int inner_radius, int outer_radius, std::string t)
 {
 	is_ring = true;
 
@@ -100,25 +148,24 @@ void Planet::setRings(int inner_radius, int outer_radius, string t)
 void Planet::draw(void)
 {
 	glPushMatrix();
-	glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
+	glTranslated(m_positionX-spaceship->pos.x, m_positionY-spaceship->pos.y, m_positionZ-spaceship->pos.z);
 
     if (m_axialTilt != 0) {
         glRotatef(m_axialTilt, 1, 0, 0);
     }
 
 	glPushMatrix();
-	glTranslated(0.0, 0.0, 1.5 * this->radius);
+	glTranslated(0.0, 0.0, 1.5 * m_radius);
 	glRasterPos2f(0, 0);
-	font->Render((this->name).c_str(), -1, *loc);
+	font->Render(m_name.c_str(), -1, *loc);
 	glPopMatrix();
 
 	sunLight->begin();
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, this->texture);
+    glBindTexture(GL_TEXTURE_2D, m_groundTexture);
     glUniform1i(idGroundMap, 1);
 	const GLfloat vecSunPosition[3] = {(GLfloat) -spaceship->pos.x, (GLfloat) -spaceship->pos.y, (GLfloat) -spaceship->pos.z};
     glUniform3fv(idSunPosition, 1, vecSunPosition);
-
 	glCallList(this->list);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE0);
@@ -126,112 +173,64 @@ void Planet::draw(void)
 
 	if (is_ring) {
 		glEnable(GL_TEXTURE_2D);
-		//glActiveTexture(GL_TEXTURE1);
-		//glGenTextures(1, &this->texture_ring);
 		glBindTexture(GL_TEXTURE_2D, this->texture_ring);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP_SGIS, GL_TRUE);
-		/*glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);*/
-		//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
 		glCallList(this->list_ring);
 		glBindTexture(GL_TEXTURE_2D, 0);
 		glDisable(GL_TEXTURE_2D);
-	}
+    }
 
 	glPopMatrix();
 }
 
-void Planet::draw_atm(void)
+void Planet::createOrbit()
 {
-    glPushMatrix();
-	glTranslated(x-spaceship->pos.x, y-spaceship->pos.y, z-spaceship->pos.z);
-    glCallList(this->m_listAtm);
-    glPopMatrix();
-}
+    // Set information
+    const int edges = 6000;
 
-void Planet::setOrbit(const EllipticalOrbit& orbit) {
-	this->Orbit = orbit;
-
-	/* Build the orbit */
-	float x, y, z, r;
-	int t;
-	float num = 6000;
+	// Build the orbit
+    const GLdouble a = m_orbit.SemiMajorAxis;
+    const GLdouble b = a * sqrt(1.0 - m_orbit.Eccentricity * m_orbit.Eccentricity);
+	GLdouble x, y, z, r;
 	GLUquadricObj *o = NULL;
 	o = gluNewQuadric();
 	gluQuadricNormals(o, GLU_SMOOTH);
-	this->orb = glGenLists(2);
-	glNewList(this->orb, GL_COMPILE);
+    m_orbit_list = glGenLists(2);
+	glNewList(m_orbit_list, GL_COMPILE);
 	glBegin(GL_LINE_LOOP);
-	for (t = 0; t <= int(num); t += 1) {
-		r = deg2rad(360.0*t/num);
-		x = this->Orbit.SemiMajorAxis * sin(r);
-		y = this->Orbit.SemiMajorAxis / (sqrt(1.0 - this->Orbit.Eccentricity * this->Orbit.Eccentricity)) * cos(r);
+
+	for (int t = 0; t <= edges; t += 1) {
+		r = deg2rad(360.0 * t / edges);
+		x = a * cos(r);
+		y = b * sin(r);
 		z = 0;
-		glVertex3f(x, y, z);
+		glVertex3d(x, y, z);
 	}
 	glEnd();
 	glEndList();
 	gluDeleteQuadric(o);
 
 	// Set the new position of the planet here
-	this->x = this->Orbit.SemiMajorAxis;
+	m_positionX = m_orbit.SemiMajorAxis;
 }
 
 void Planet::drawOrbit(void)
 {
 	glPushMatrix();
 	glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
-	glCallList(this->orb);
+    if (m_orbit.LongitudeOfAscendingNode != 0.0) {
+        glRotated(m_orbit.LongitudeOfAscendingNode, 0, 0, 1);
+    }
+    if (m_orbit.ArgumentOfPeriapsis != 0.0) {
+        glRotated(m_orbit.ArgumentOfPeriapsis, 0, 0, 1);
+    }
+    if (m_orbit.Inclination != 0.0) {
+        glRotated(m_orbit.Inclination, 1, 0, 0);
+    }
+	glCallList(m_orbit_list);
 	glPopMatrix();
-}
-
-void Planet::add_moon(void)
-{
-
-}
-
-void Planet::set_atm_height(int height)
-{
-	this->Atm.Height = height;
-
-	if(height > 0) {
-
-        // Create the list
-		GLUquadricObj *sphere = NULL;
-		sphere = gluNewQuadric();
-		gluQuadricDrawStyle(sphere, GLU_FILL);
-		gluQuadricNormals(sphere, GLU_SMOOTH);
-		gluQuadricTexture(sphere, 1);
-
-		/*glEnable(GL_TEXTURE_2D);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);*/
-
-		this->m_listAtm = glGenLists(3);
-        glNewList(this->m_listAtm, GL_COMPILE);
-        gluSphere(sphere, this->radius + this->Atm.Height, 1000, 1000);
-        glEndList();
-        gluDeleteQuadric(sphere);
-		//glDisable(GL_TEXTURE_2D);
-	}
-}
-
-void Planet::add_atmosphere(Atmosphere atm)
-{
-	this->Atm = atm;
-}
-
-void Planet::add_rotation(UniformRotation rot)
-{
-	Rotation = rot;
 }
