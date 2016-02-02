@@ -25,12 +25,10 @@ class Planet
 public:
     Planet(std::string json_file);
 
-    /// Configuration of the planet
-	void setRings(int inner_radius, int outer_radius, std::string t);
-
-    /// Display of the planet
+    // Display of the planet
     void draw();
 	void drawOrbit();
+	void lookAt();
 
 private:
 	std::string m_name = "";
@@ -42,7 +40,7 @@ private:
 
     // Ground attributes
 	GLuint list;
-	GLuint m_groundTexture;
+	GLuint m_ground_texture;
 
     // Orbital attributes
     void createOrbit();
@@ -50,10 +48,12 @@ private:
 	GLuint m_orbit_list;
 
 	// Rings
-	bool is_ring = false;
-	int outer_radius = 0, inner_radius = 0;
-	GLuint list_ring = 0;
-	GLuint texture_ring = 0;
+    void createRings();
+	bool m_is_ring = false;
+    double m_inner_radius = 0;
+	double m_outer_radius = 0;
+	GLuint m_ring_list = 0;
+	GLuint m_ring_texture = 0;
 
 	// Misc
 	FTPoint *loc;
@@ -62,6 +62,29 @@ private:
 	GLShader *sunLight;
 	GLint idGroundMap;
 	GLint idSunPosition;
+};
+
+// TODO: Singleton pool
+extern Planet *mercury;
+extern Planet *venus;
+extern Planet *earth;
+extern Planet *mars;
+extern Planet *jupiter;
+extern Planet *saturn;
+extern Planet *uranus;
+extern Planet *neptune;
+extern Planet *pluto;
+
+static void InitPlanet(){
+    mercury = new Planet("mercury.json");
+    venus = new Planet("venus.json");
+    earth = new Planet("earth.json");
+    mars = new Planet("mars.json");
+    jupiter = new Planet("jupiter.json");
+    saturn = new Planet("saturn.json");
+    uranus = new Planet("uranus.json");
+    neptune = new Planet("neptune.json");
+    pluto = new Planet("pluto.json");
 };
 
 #endif /* PLANET_H_ */

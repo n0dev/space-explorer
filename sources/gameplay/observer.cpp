@@ -4,14 +4,11 @@
 
 #include "observer.h"
 
-using namespace std;
-
 Observer *spaceship;
 
 Observer::Observer()
 {
-	cout << "[+] Initialize spaceship...";
-	flush(cout);
+    std::cout << "[+] Initialize spaceship...";
 
 	quater.qw = 0.98;
 	quater.qx = 0.00;
@@ -23,7 +20,15 @@ Observer::Observer()
 	rangespeed = 3;
 	speed = 0;
 
-	cout << " done!" << endl;
+    std::cout << " done!" << std::endl;
+}
+
+void Observer::lookAt(double x, double y, double z)
+{
+    double norm = sqrt(x*x + y*y + z*z);
+    matrix[0] = x/norm;
+    matrix[4] = y/norm;
+    matrix[8] = z/norm;
 }
 
 double Observer::get_distance()
@@ -38,6 +43,6 @@ void Observer::update()
 	pos.z += speed * matrix[8];
 
 	gluLookAt(0.0, 0.0, 0.0,
-			matrix[0], matrix[4], matrix[8],
-			matrix[2], matrix[6], matrix[10]);
+              matrix[0], matrix[4], matrix[8],
+              matrix[2], matrix[6], matrix[10]);
 }

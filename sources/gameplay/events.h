@@ -1,3 +1,6 @@
+#ifndef EVENTS_H_
+#define EVENTS_H_
+
 #include <SDL/SDL.h>
 
 typedef struct
@@ -22,3 +25,5 @@ void handleKeyPress(SDL_keysym *keysym);
 void evolve();
 
 void computeSpaceshipSpeed();
+
+#endif /* EVENTS_H_ */

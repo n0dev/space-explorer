@@ -1,7 +1,5 @@
-#include <iostream>
-#include <string>
-#include <vector>
-#include <iomanip>
+#ifndef MUSIC_H_
+#define MUSIC_H_
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -14,3 +12,5 @@ ALuint LoadSound(const std::string& Filename);
 void PlaySound();
 
 void CloseAudio();
+
+#endif /* MUSIC_H_ */

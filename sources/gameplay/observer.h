@@ -1,3 +1,6 @@
+#ifndef OBSERVER_H_
+#define OBSERVER_H_
+
 #include "../include/quaternions.h"
 
 class Observer
@@ -24,7 +27,7 @@ public:
 	double speed;
 
 	// Display an object relative to the eye
-	void display_object(double x, double y, double z);
+	void lookAt(double x, double y, double z);
 
     //
 	double get_distance();
@@ -38,3 +41,5 @@ public:
 
 
 extern Observer *spaceship;
+
+#endif /* OBSERVER_H_ */
