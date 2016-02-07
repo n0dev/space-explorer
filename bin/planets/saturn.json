@@ -1,0 +1,19 @@
+{
+  "Name": "Saturn",
+  "GroundTexture": "saturn.png",
+  "Radius": 60000000.0,
+  "AxialTilt": 26.73,
+  "Orbit": {
+    "SemiMajorAxis": 1433449370000,
+    "Eccentricity": 0.055723219,
+    "Inclination": 2.49,
+    "LongitudeOfAscendingNode": 113.665,
+    "ArgumentOfPeriapsis": 339.392,
+    "OrbitalSpeed": 9690
+  },
+  "Rings": {
+    "InnerDistance": 74500000,
+    "OuterDistance": 140220000,
+    "Texture": "saturnrings.png"
+  }
+}

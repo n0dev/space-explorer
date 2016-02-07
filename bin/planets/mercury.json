@@ -1,0 +1,13 @@
+{
+  "Name": "Mercury",
+  "GroundTexture": "mercury.png",
+  "Radius": 2400000.0,
+  "AxialTilt": 0.03,
+  "Orbit": {
+    "SemiMajorAxis": 57909100000,
+    "Eccentricity": 0.205630,
+    "Inclination": 7.01,
+    "LongitudeOfAscendingNode": 48.331,
+    "ArgumentOfPeriapsis": 29.124
+  }
+}

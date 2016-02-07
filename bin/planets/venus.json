@@ -1,0 +1,13 @@
+{
+  "Name": "Venus",
+  "GroundTexture": "venus.png",
+  "Radius": 6050000.0,
+  "AxialTilt": 177.36,
+  "Orbit": {
+    "SemiMajorAxis": 108208000000,
+    "Eccentricity": 0.0067,
+    "Inclination": 3.39,
+    "LongitudeOfAscendingNode": 76.680,
+    "ArgumentOfPeriapsis": 54.884
+  }
+}

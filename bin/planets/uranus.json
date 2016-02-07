@@ -1,0 +1,13 @@
+{
+  "Name": "Uranus",
+  "GroundTexture": "uranus.png",
+  "Radius": 25500000.0,
+  "AxialTilt": 97.77,
+  "Orbit": {
+    "SemiMajorAxis": 2876679082000,
+    "Eccentricity": 0.044405586,
+    "Inclination": 0.77,
+    "LongitudeOfAscendingNode": 131.784,
+    "ArgumentOfPeriapsis": 276.336
+  }
+}

@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
     PlaySound();
 
     // Matrix
-    quatToMatrix(&spaceship->quater, spaceship->matrix);
+    quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
     spaceship->update();
 
     Uint32 elapsed_time;
@@ -93,31 +93,14 @@ int main(int argc, char *argv[]) {
             //Sun.light();
 
             mercury->draw();
-            mercury->drawOrbit();
-
             venus->draw();
-            venus->drawOrbit();
-
             earth->draw();
-            earth->drawOrbit();
-
             mars->draw();
-            mars->drawOrbit();
-
             jupiter->draw();
-            jupiter->drawOrbit();
-
             saturn->draw();
-            saturn->drawOrbit();
-
             uranus->draw();
-            uranus->drawOrbit();
-
             neptune->draw();
-            neptune->drawOrbit();
-
             pluto->draw();
-            pluto->drawOrbit();
         }
 
         // Galaxy example

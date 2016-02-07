@@ -1,0 +1,13 @@
+{
+  "Name": "Mars",
+  "GroundTexture": "mars.png",
+  "Radius": 3350000.0,
+  "AxialTilt": 25.19,
+  "Orbit": {
+    "SemiMajorAxis": 227939100000,
+    "Eccentricity": 0.093315,
+    "Inclination": 1.85,
+    "LongitudeOfAscendingNode": 49.558,
+    "ArgumentOfPeriapsis": 286.502
+  }
+}

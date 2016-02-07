@@ -1,0 +1,13 @@
+{
+  "Name": "Earth",
+  "GroundTexture": "earth.png",
+  "Radius": 6357000.0,
+  "AxialTilt": 23.44,
+  "Orbit": {
+    "SemiMajorAxis": 149598261000,
+    "Eccentricity": 0.01671123,
+    "Inclination": 0.0,
+    "LongitudeOfAscendingNode": -11.26064,
+    "ArgumentOfPeriapsis": 114.20783
+  }
+}

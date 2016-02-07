@@ -17,7 +17,7 @@ struct EllipticalOrbit {
 	double LongitudeOfAscendingNode = 0.0;
 	double MeanAnomaly;
     double OrbitalPeriod;
-    double OrbitalSpeed;
+    double OrbitalSpeed = 0.0;
 };
 
 class Planet
@@ -25,9 +25,11 @@ class Planet
 public:
     Planet(std::string json_file);
 
+    // Configure the display
+    void displayOrbit(bool);
+
     // Display of the planet
     void draw();
-	void drawOrbit();
 	void lookAt();
 
 private:
@@ -43,6 +45,7 @@ private:
 	GLuint m_ground_texture;
 
     // Orbital attributes
+    bool m_displayOrbit = true;
     void createOrbit();
     EllipticalOrbit m_orbit;
 	GLuint m_orbit_list;

@@ -157,9 +157,41 @@ void Planet::createRings() {
     m_is_ring = true;
 }
 
+double t = 0.0;
+
 void Planet::draw(void) {
+
+    const GLdouble a = m_orbit.SemiMajorAxis;
+    const GLdouble b = a * sqrt(1.0 - m_orbit.Eccentricity * m_orbit.Eccentricity);
+
     glPushMatrix();
-    glTranslated(m_positionX - spaceship->pos.x, m_positionY - spaceship->pos.y, m_positionZ - spaceship->pos.z);
+    glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
+
+    if (m_orbit.LongitudeOfAscendingNode != 0.0) {
+        glRotated(m_orbit.LongitudeOfAscendingNode, 0, 0, 1);
+    }
+    if (m_orbit.ArgumentOfPeriapsis != 0.0) {
+        glRotated(m_orbit.ArgumentOfPeriapsis, 0, 0, 1);
+    }
+    if (m_orbit.Inclination != 0.0) {
+        glRotated(m_orbit.Inclination, 1, 0, 0);
+    }
+
+    if (m_displayOrbit) {
+        glCallList(m_orbit_list);
+    }
+
+    // Compute position of the planet
+    if (m_orbit.OrbitalSpeed > 10.0) {
+        m_positionX = a * cos(t+=0.00001);
+        m_positionY = b * sin(t+=0.00001);
+    }
+    else {
+        m_positionX = a;
+        m_positionY = 0.0;
+    }
+
+    glTranslated(m_positionX, m_positionY, 0.0);
 
     if (m_axialTilt != 0) {
         glRotatef(m_axialTilt, 1, 0, 0);
@@ -175,7 +207,8 @@ void Planet::draw(void) {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, m_ground_texture);
     glUniform1i(idGroundMap, 1);
-    const GLfloat vecSunPosition[3] = {(GLfloat) -spaceship->pos.x, (GLfloat) -spaceship->pos.y,
+    const GLfloat vecSunPosition[3] = {(GLfloat) -spaceship->pos.x,
+                                       (GLfloat) -spaceship->pos.y,
                                        (GLfloat) -spaceship->pos.z};
     glUniform3fv(idSunPosition, 1, vecSunPosition);
     glCallList(this->list);
@@ -233,18 +266,6 @@ void Planet::createOrbit() {
     m_positionX = m_orbit.SemiMajorAxis;
 }
 
-void Planet::drawOrbit(void) {
-    glPushMatrix();
-    glTranslated(-spaceship->pos.x, -spaceship->pos.y, -spaceship->pos.z);
-    if (m_orbit.LongitudeOfAscendingNode != 0.0) {
-        glRotated(m_orbit.LongitudeOfAscendingNode, 0, 0, 1);
-    }
-    if (m_orbit.ArgumentOfPeriapsis != 0.0) {
-        glRotated(m_orbit.ArgumentOfPeriapsis, 0, 0, 1);
-    }
-    if (m_orbit.Inclination != 0.0) {
-        glRotated(m_orbit.Inclination, 1, 0, 0);
-    }
-    glCallList(m_orbit_list);
-    glPopMatrix();
+void Planet::displayOrbit(bool b) {
+    m_displayOrbit = b;
 }

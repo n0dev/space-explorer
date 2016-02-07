@@ -9,7 +9,8 @@ public:
 	Observer();
 
 	/* Position of the this is the position of the camera*/
-	POSITION pos;
+	Vec3 pos;
+	Vec3 euler;
 	Quat quater;
 
 	/* Controls */
@@ -36,7 +37,7 @@ public:
 	void update();
 
 //private:
-	Mat16 matrix;
+	Mat4 matrix;
 };
 
 

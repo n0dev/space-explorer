@@ -1,0 +1,13 @@
+{
+  "Name": "Neptune",
+  "GroundTexture": "neptune.png",
+  "Radius": 24500000.0,
+  "AxialTilt": 28.32,
+  "Orbit": {
+    "SemiMajorAxis": 4503443661000,
+    "Eccentricity": 0.011214269,
+    "Inclination": 1.77,
+    "LongitudeOfAscendingNode": 113.665,
+    "ArgumentOfPeriapsis": 339.392
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "Name": "Jupiter",
+  "GroundTexture": "jupiter.png",
+  "Radius": 71000000.0,
+  "AxialTilt": 3.13,
+  "Orbit": {
+    "SemiMajorAxis": 778547200000,
+    "Eccentricity": 0.048775,
+    "Inclination": 1.31,
+    "LongitudeOfAscendingNode": 100.464,
+    "ArgumentOfPeriapsis": 273.867
+  }
+}

@@ -221,8 +221,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[4] * sin(rotation/2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[8] * sin(rotation/2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 
 	if (abs(globalInput.y_move) > 1800) {
@@ -232,8 +232,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[5] * sin(rotation/2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[9] * sin(rotation/2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 
 	if (abs(globalInput.x1_move) > 1600) {
@@ -243,8 +243,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[6] * sin(rotation/2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[10]* sin(rotation/2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 
 	computeSpaceshipSpeed();
@@ -262,8 +262,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[4] * sin(rotation / 2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[8] * sin(rotation / 2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 	if(globalInput.key[SDLK_d] == 1) {
 		rotation = 0.03;
@@ -272,8 +272,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[4] * sin(rotation / 2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[8] * sin(rotation / 2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 	if(globalInput.key[SDLK_z] == 1) {
 		rotation = 0.03;
@@ -282,8 +282,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[5] * sin(rotation / 2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[9] * sin(rotation / 2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 	if(globalInput.key[SDLK_s] == 1) {
 		rotation = -0.03;
@@ -292,8 +292,8 @@ void evolve() {
 		CamQuaternionLocalRotation.qy = spaceship->matrix[5] * sin(rotation / 2);
 		CamQuaternionLocalRotation.qz = spaceship->matrix[9] * sin(rotation / 2);
 		quatMultiply(spaceship->quater, CamQuaternionLocalRotation, spaceship->quater);
-		quatNormalise(spaceship->quater);
-		quatToMatrix(&spaceship->quater, spaceship->matrix);
+		quaternion_normalise(spaceship->quater);
+		quaternion_to_matrix(&spaceship->quater, spaceship->matrix);
 	}
 	if(globalInput.key[SDLK_RIGHT] == 1) {
 		spaceship->pos.x -= 0.5 * (spaceship->matrix[1]);

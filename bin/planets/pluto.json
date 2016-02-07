@@ -1,0 +1,13 @@
+{
+  "Name": "Pluto",
+  "GroundTexture": "pluto.png",
+  "Radius": 1150000.0,
+  "AxialTilt": 122.53,
+  "Orbit": {
+    "SemiMajorAxis": 5874000000000,
+    "Eccentricity": 0.24880766,
+    "Inclination": 17.1405,
+    "LongitudeOfAscendingNode": 110.299,
+    "ArgumentOfPeriapsis": 113.834
+  }
+}
