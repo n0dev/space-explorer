@@ -11,7 +11,7 @@
 #define PROGRAM_AUTHOR "Nicolas Hess"
 #define SCREEN_BPP 32
 
-extern SDL_Surface * pScreen;
+extern SDL_Surface *pScreen;
 extern Uint32 videoFlags;
 extern const SDL_VideoInfo *videoInfo;
 
@@ -27,8 +27,8 @@ void gui_close(void);
 // Font FTGL pointer
 extern FTGLPixmapFont *font;
 
-void display_actual_speed(char* text, double speed);
+void display_actual_speed(char *text, double speed, int range);
 
-void display_actual_distance(char* text, double distance);
+void display_actual_distance(char *text, double distance);
 
 #endif /* GUI_H_ */

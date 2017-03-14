@@ -5,6 +5,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(/usr/include/freetype2/)
 
+#file(GLOB SOURCE_FILES
+#        ${PROJECT_SOURCE_DIR}/sources/*.cpp)
+
 set(SOURCE_FILES
     sources/data/importdb.cpp
     sources/data/importdb.h
@@ -41,4 +44,4 @@ set(SOURCE_FILES
 
 add_executable(space_explorer ${SOURCE_FILES})
 
-target_link_libraries(space_explorer GL GLU GLEW openal png tiff SDL sndfile ftgl)
+target_link_libraries(space_explorer SDL GL GLU GLEW openal png tiff sndfile ftgl)

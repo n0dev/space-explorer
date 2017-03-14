@@ -10,18 +10,17 @@
 struct EllipticalOrbit {
     double Aphelion;       // farthest point from the sun
     double Perihelion;     // nearest point from the sun
-	double SemiMajorAxis;
-	double Eccentricity;
-	double Inclination = 0.0;
+    double SemiMajorAxis;
+    double Eccentricity;
+    double Inclination = 0.0;
     double ArgumentOfPeriapsis = 0.0;
-	double LongitudeOfAscendingNode = 0.0;
-	double MeanAnomaly;
+    double LongitudeOfAscendingNode = 0.0;
+    double MeanAnomaly;
     double OrbitalPeriod;
     double OrbitalSpeed = 0.0;
 };
 
-class Planet
-{
+class Planet {
 public:
     Planet(std::string json_file);
 
@@ -30,41 +29,45 @@ public:
 
     // Display of the planet
     void draw();
-	void lookAt();
+
+    void lookAt();
 
 private:
-	std::string m_name = "";
-	double m_radius = 0.0;
-	double m_positionX = 0.0;
+    std::string m_name = "";
+    double m_radius = 0.0;
+    double m_positionX = 0.0;
     double m_positionY = 0.0;
     double m_positionZ = 0.0;
-	GLfloat m_axialTilt = 0.0;
+    GLfloat m_axialTilt = 0.0;
 
     // Ground attributes
-	GLuint list;
-	GLuint m_ground_texture;
+    GLuint list;
+    GLuint m_ground_texture;
 
     // Orbital attributes
     bool m_displayOrbit = true;
+
     void createOrbit();
+
     EllipticalOrbit m_orbit;
-	GLuint m_orbit_list;
+    GLuint m_orbit_list;
 
-	// Rings
+    // Rings
     void createRings();
-	bool m_is_ring = false;
+
+    bool m_is_ring = false;
     double m_inner_radius = 0;
-	double m_outer_radius = 0;
-	GLuint m_ring_list = 0;
-	GLuint m_ring_texture = 0;
+    double m_outer_radius = 0;
+    GLuint m_ring_list = 0;
+    GLuint m_ring_texture = 0;
 
-	// Misc
-	FTPoint *loc;
+    // Misc
+    FTPoint *loc;
 
-	// Lights
-	GLShader *sunLight;
-	GLint idGroundMap;
-	GLint idSunPosition;
+    // Lights
+    GLShader *sunLight;
+    GLint idGroundMap;
+    GLint idSunPosition;
 };
 
 // TODO: Singleton pool
@@ -78,7 +81,7 @@ extern Planet *uranus;
 extern Planet *neptune;
 extern Planet *pluto;
 
-static void InitPlanet(){
+static void InitPlanet() {
     mercury = new Planet("mercury.json");
     venus = new Planet("venus.json");
     earth = new Planet("earth.json");

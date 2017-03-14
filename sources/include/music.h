@@ -5,9 +5,9 @@
 #include <AL/alc.h>
 #include <sndfile.h>
 
-bool InitOpenAL(const char* DeviceName = NULL);
+bool InitOpenAL(const char *DeviceName = NULL);
 
-ALuint LoadSound(const std::string& Filename);
+ALuint LoadSound(const std::string &Filename);
 
 void PlaySound();
 

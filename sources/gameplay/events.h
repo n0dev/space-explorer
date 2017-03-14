@@ -3,17 +3,16 @@
 
 #include <SDL/SDL.h>
 
-typedef struct
-{
-	char key[SDLK_LAST];
-	int mousex,mousey;
-	int mousexrel,mouseyrel;
-	int mousebuttons[8];
+typedef struct {
+    char key[SDLK_LAST];
+    int mousex, mousey;
+    int mousexrel, mouseyrel;
+    int mousebuttons[8];
 
-	Sint16 x_move, y_move, x1_move, speed;
-	int button[20];
+    Sint16 x_move, y_move, x1_move, speed;
+    int button[20];
 
-	int quit;
+    int quit;
 } Input;
 
 extern Input globalInput;

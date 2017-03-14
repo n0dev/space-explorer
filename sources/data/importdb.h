@@ -2,13 +2,13 @@ typedef double STARCOLOR[3];
 
 typedef struct {
 
-	int id;
-	double x;
-	double y;
-	double z;
-	double alpha;
-	double temp;
-	STARCOLOR color;
+    int id;
+    double x;
+    double y;
+    double z;
+    double alpha;
+    double temp;
+    STARCOLOR color;
 
 } starsdb;
 

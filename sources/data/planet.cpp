@@ -183,10 +183,9 @@ void Planet::draw(void) {
 
     // Compute position of the planet
     if (m_orbit.OrbitalSpeed > 10.0) {
-        m_positionX = a * cos(t+=0.00001);
-        m_positionY = b * sin(t+=0.00001);
-    }
-    else {
+        m_positionX = a * cos(t += 0.00001);
+        m_positionY = b * sin(t += 0.00001);
+    } else {
         m_positionX = a;
         m_positionY = 0.0;
     }

@@ -12,10 +12,10 @@
 #define KM2MLY 9460700000000000000.0
 #define LY2PC 3.26
 
-double convert_m_to_ly (double km);
+double convert_m_to_ly(double km);
 
-double convert_m_to_kly (double km);
+double convert_m_to_kly(double km);
 
-double convert_m_to_mly (double km);
+double convert_m_to_mly(double km);
 
-double convert_m_to_au (double km);
+double convert_m_to_au(double km);

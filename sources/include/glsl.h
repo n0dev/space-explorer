@@ -5,12 +5,11 @@
 
 #include <GL/gl.h>
 
-class GLShader
-{
+class GLShader {
 public:
 
     // Load and compile vertex and fragment shader file
-    GLShader(const std::string& vertex_file, const std::string& fragment_file);
+    GLShader(const std::string &vertex_file, const std::string &fragment_file);
 
     // Use the program
     void begin();

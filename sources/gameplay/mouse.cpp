@@ -7,8 +7,7 @@
 
 #include <SDL/SDL_mouse.h>
 
-void mousedetect(void)
-{
+void mousedetect(void) {
 
 
 }

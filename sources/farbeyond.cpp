@@ -149,7 +149,7 @@ int main(int argc, char *argv[]) {
         glRasterPos2d(0.0, 0.0);
 
         // Speed
-        display_actual_speed(speed, spaceship->speed);
+        display_actual_speed(speed, spaceship->speed, spaceship->rangespeed);
         FTPoint loc1(4.0, pScreen->h - 14);
         font->Render(speed, -1, loc1);
 

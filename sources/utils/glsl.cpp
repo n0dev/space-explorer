@@ -7,8 +7,7 @@
 
 #include "../include/glsl.h"
 
-std::string loadFromFile(const std::string& file)
-{
+std::string loadFromFile(const std::string &file) {
     std::ifstream ifile(file);
     std::string filetext;
 
@@ -21,8 +20,7 @@ std::string loadFromFile(const std::string& file)
     return filetext;
 }
 
-GLShader::GLShader(const std::string& vertex_file, const std::string& fragment_file)
-{
+GLShader::GLShader(const std::string &vertex_file, const std::string &fragment_file) {
     // Create both shaders
     vertexShader = glCreateShader(GL_VERTEX_SHADER);
     if (vertexShader == 0) {
@@ -49,7 +47,7 @@ GLShader::GLShader(const std::string& vertex_file, const std::string& fragment_f
         GLint maxLength = 0;
         glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-        GLchar* log_string = new char[maxLength + 1];
+        GLchar *log_string = new char[maxLength + 1];
         glGetShaderInfoLog(vertexShader, maxLength, 0, log_string);
         std::cout << "Cannot build vertexShader: " << log_string << std::endl;
 
@@ -72,11 +70,11 @@ GLShader::GLShader(const std::string& vertex_file, const std::string& fragment_f
     glCompileShader(fragmentShader);
     glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &isCompiled);
 
-    if(isCompiled == GL_FALSE) {
+    if (isCompiled == GL_FALSE) {
         GLint maxLength = 0;
         glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &maxLength);
 
-        GLchar* log_string = new char[maxLength + 1];
+        GLchar *log_string = new char[maxLength + 1];
         glGetShaderInfoLog(fragmentShader, maxLength, 0, log_string);
         std::cout << "Cannot build fragmentShader: " << log_string << std::endl;
 
@@ -98,9 +96,8 @@ GLShader::GLShader(const std::string& vertex_file, const std::string& fragment_f
 
     //Note the different functions here: glGetProgram* instead of glGetShader*.
     GLint isLinked = 0;
-    glGetProgramiv(program, GL_LINK_STATUS, (int *)&isLinked);
-    if(isLinked == GL_FALSE)
-    {
+    glGetProgramiv(program, GL_LINK_STATUS, (int *) &isLinked);
+    if (isLinked == GL_FALSE) {
         GLint maxLength = 0;
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -123,13 +120,11 @@ GLShader::GLShader(const std::string& vertex_file, const std::string& fragment_f
     glDetachShader(program, fragmentShader);
 }
 
-void GLShader::begin()
-{
+void GLShader::begin() {
     glUseProgram(program);
 }
 
 // Unuse the program
-void GLShader::end()
-{
+void GLShader::end() {
     glUseProgram(0);
 }

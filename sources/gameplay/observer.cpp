@@ -6,15 +6,14 @@
 
 Observer *spaceship;
 
-Observer::Observer()
-{
+Observer::Observer() {
     std::cout << "[+] Initialize spaceship...";
 
     quater.qw = 0.98;
     quater.qx = 0.00;
     quater.qy = 0.06;
     quater.qz = 0.15;
-    pos.x = 1.433*1e12;
+    pos.x = 1.433 * 1e12;
     pos.y = -1.58e8;
     pos.z = 1e8;
     rangespeed = 3;
@@ -23,16 +22,15 @@ Observer::Observer()
     std::cout << " done!" << std::endl;
 }
 
-void Observer::lookAt(double x, double y, double z)
-{
+void Observer::lookAt(double x, double y, double z) {
     double angle = 0.05;
-    double sin_a = sin( angle / 2 );
-    double cos_a = cos( angle / 2 );
+    double sin_a = sin(angle / 2);
+    double cos_a = cos(angle / 2);
 
-    quater.qx    = 0 * sin_a;
-    quater.qy    = 0 * sin_a;
-    quater.qz    = 1.0 * sin_a;
-    quater.qw    = cos_a;
+    quater.qx = 0 * sin_a;
+    quater.qy = 0 * sin_a;
+    quater.qz = 1.0 * sin_a;
+    quater.qw = cos_a;
 
     quaternion_normalise(quater);
     quaternion_to_matrix(&quater, matrix);
@@ -45,13 +43,11 @@ void Observer::lookAt(double x, double y, double z)
     quatToMatrix(&quater, matrix);*/
 }
 
-double Observer::get_distance()
-{
+double Observer::get_distance() {
     return sqrt(pos.x * pos.x + pos.y * pos.y + pos.z * pos.z);
 }
 
-void Observer::update()
-{
+void Observer::update() {
     pos.x += speed * matrix[0];
     pos.y += speed * matrix[4];
     pos.z += speed * matrix[8];
