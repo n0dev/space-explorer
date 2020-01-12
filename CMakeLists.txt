@@ -40,7 +40,7 @@ set(SOURCE_FILES
     sources/utils/glsl.cpp
     sources/utils/quaternions.cpp
     sources/utils/utils.cpp
-    sources/farbeyond.cpp)
+    sources/space-explorer.cpp)
 
 add_executable(space_explorer ${SOURCE_FILES})
 
